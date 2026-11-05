@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CV Maker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Source+Serif+4:wght@600;700&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1b2430;--mute:#667085;--line:#e3e7ee;--bg:#f2f4f8;--card:#fff;--ac:#0a66c2;--red:#c0362c}
+*{box-sizing:border-box}
+body{margin:0;font-family:Manrope,system-ui,sans-serif;background:var(--bg);color:var(--ink)}
+button,input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid #8bb8ee;outline-offset:2px}
+.top{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;padding:10px 24px}
+.brand{font-weight:800;font-size:18px;margin-right:auto}
+.brand b{color:var(--ac)}
+.tools{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.seg{display:flex;background:var(--bg);border-radius:10px;padding:3px}
+.seg button{border:0;background:none;padding:6px 14px;border-radius:8px;cursor:pointer;font-weight:600;font-size:13px;color:var(--mute)}
+.seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.sw{display:flex;gap:6px}
+.sw button{width:24px;height:24px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px var(--line);cursor:pointer}
+.sw button.on{box-shadow:0 0 0 2px var(--ink)}
+.btn{border:1px solid var(--line);background:#fff;padding:8px 14px;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer}
+.btn:hover{border-color:#b9c2d0}
+.btn.pri{background:var(--ac);border-color:var(--ac);color:#fff}
+.btn.pri:hover{filter:brightness(.92)}
+.layout{display:grid;grid-template-columns:minmax(360px,470px) 1fr;gap:24px;padding:24px;max-width:1500px;margin:auto;align-items:start}
+.panel{background:var(--card);border-radius:16px;border:1px solid var(--line);position:sticky;top:76px;max-height:calc(100vh - 96px);display:flex;flex-direction:column;overflow:hidden}
+.prog{padding:16px 20px 12px}
+.prog small{display:flex;justify-content:space-between;color:var(--mute);font-weight:600;font-size:12px;margin-bottom:6px}
+.bar{height:6px;background:var(--bg);border-radius:9px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--ac);transition:width .3s}
+.steps{display:flex;gap:4px;padding:0 14px;border-bottom:1px solid var(--line);overflow-x:auto}
+.steps button{border:0;background:none;padding:10px 10px;font-weight:700;font-size:13px;color:var(--mute);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap}
+.steps button.on{color:var(--ink);border-color:var(--ac)}
+.body{padding:20px;overflow:auto;flex:1}
+.step{display:none}.step.on{display:block}
+h2{font-size:18px;margin:0 0 4px}.hint{color:var(--mute);font-size:13px;margin:0 0 16px}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:12px}.full{grid-column:1/-1}
+label{display:block;font-size:12px;font-weight:700;color:#3b4656;margin-bottom:5px}
+input[type=text],input[type=email],input[type=tel],input[type=url],textarea{width:100%;padding:10px 12px;border:1px solid #cfd6e1;border-radius:10px;background:#fff;font-size:14px}
+input:focus,textarea:focus{border-color:var(--ac);outline:3px solid #d6e6fa;outline-offset:0}
+textarea{resize:vertical;min-height:80px}
+.bad{border-color:var(--red)!important}.err{color:var(--red);font-size:12px;margin-top:4px;display:none}
+.photo{display:flex;align-items:center;gap:14px}
+.photo .pv{width:64px;height:64px;border-radius:50%;background:var(--bg) center/cover;border:1px dashed #b9c2d0;flex:none}
+.item{border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px;background:#fafbfd}
+.item header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-weight:700;font-size:13px}
+.item header div{display:flex;gap:4px}
+.ic{border:0;background:none;cursor:pointer;color:var(--mute);width:28px;height:28px;border-radius:8px;font-size:15px}
+.ic:hover{background:#e9edf4;color:var(--ink)}
+.add{width:100%;border:1.5px dashed #b9c2d0;background:none;padding:11px;border-radius:12px;font-weight:700;color:var(--ac);cursor:pointer}
+.add:hover{background:#f0f6fd}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{background:#e8f1fb;color:#0a4d94;border-radius:99px;padding:5px 6px 5px 12px;font-size:13px;font-weight:600;display:flex;gap:4px;align-items:center}
+.chip button{border:0;background:none;cursor:pointer;color:inherit;font-size:14px;line-height:1}
+.nav{display:flex;justify-content:space-between;padding:12px 20px;border-top:1px solid var(--line);background:#fff}
+.stage{min-width:0}
+.fit{width:100%;overflow:hidden}
+#cv{width:794px;min-height:1123px;background:#fff;transform-origin:top left;box-shadow:0 8px 30px rgba(20,30,50,.14);font-family:"Source Sans 3",Arial,sans-serif;font-size:13px;line-height:1.5;color:#222}
+#cv .ph{color:#aab1bd}
+#cv h1{margin:0;font-family:"Source Serif 4",Georgia,serif;font-size:32px;line-height:1.1;font-weight:700;color:#111}
+#cv .role{font-size:15px;font-weight:600;color:var(--ac);margin-top:3px}
+#cv h3{font-size:12px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;margin:20px 0 9px;padding-bottom:3px;color:#111;border-bottom:1px solid #c9ced6}
+#cv .it{margin-bottom:11px;break-inside:avoid}
+#cv .row{display:flex;justify-content:space-between;gap:12px;font-weight:700;color:#111}
+#cv .row span:last-child{font-weight:400;color:#555;font-size:12px;white-space:nowrap}
+#cv .org{font-style:italic;color:#444}
+#cv ul{margin:3px 0 0;padding-left:17px}#cv li{margin-bottom:2px}
+#cv p{margin:0}
+#cv a{color:inherit;text-decoration:none}
+.classic .contact a{color:var(--ac);font-weight:600}
+.classic .it a{color:var(--ac)}
+.sidebar aside a{color:#fff}
+.seg button{white-space:nowrap}
+.classic .head{padding:44px 54px 0}
+.classic .contact{margin-top:8px;font-size:12px;color:#444;padding-bottom:10px;border-bottom:2.5px solid var(--ac)}
+.classic .contact span+span:before{content:"•";margin:0 9px;color:var(--ac)}
+.classic .cols{padding:0 54px 44px}
+.classic .sk{display:grid;grid-template-columns:1fr;gap:2px}
+.sidebar .wrap{display:grid;grid-template-columns:255px 1fr;min-height:1123px}
+.sidebar aside{background:var(--ac);color:#fff;padding:40px 24px}
+.sidebar aside h3{color:#fff;border-color:rgba(255,255,255,.45);margin-top:24px}
+.sidebar aside .ph{color:rgba(255,255,255,.6)}
+.sidebar .ph-img{width:128px;height:128px;border-radius:50%;background:#fff center/cover;margin:0 auto 6px;border:4px solid rgba(255,255,255,.55)}
+.sidebar .ci{word-break:break-word;margin-bottom:6px;font-size:12.5px}
+.sidebar .sk div{margin-bottom:3px}
+.sidebar aside .row span:last-child,.sidebar aside .org{color:rgba(255,255,255,.85)}
+.sidebar aside .row{color:#fff;flex-direction:column;gap:0}
+.sidebar main{padding:44px 40px}
+.sidebar main h3{color:var(--ac);border-color:var(--ac)}
+@media(max-width:1000px){.layout{grid-template-columns:1fr}.panel{position:static;max-height:none}}
+@media print{
+@page{size:A4;margin:0}
+body{background:#fff}.top,.panel{display:none!important}
+.layout{display:block;padding:0}.fit{height:auto!important;overflow:visible}
+#cv{transform:none!important;box-shadow:none;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+<div class="top d-print-none">
+  <div class="brand">CV<b>Maker</b></div>
+  <div class="tools">
+    <div class="seg" id="tplSeg"><button data-t="classic">Classic</button><button data-t="sidebar">Sidebar</button></div>
+    <div class="sw" id="swatches" aria-label="Accent colour"></div>
+    <button class="btn" id="sample">Fill sample</button>
+    <button class="btn" id="reset">Reset</button>
+    <button class="btn pri" id="print">Download PDF</button>
+  </div>
+</div>
+
+<div class="layout">
+  <section class="panel">
+    <div class="prog"><small><span>Profile strength</span><span id="pct">0%</span></small><div class="bar"><i id="bar"></i></div></div>
+    <nav class="steps" id="steps"></nav>
+    <div class="body">
+      <div class="step" data-s="0">
+        <h2>Personal details</h2><p class="hint">Recruiters see this first, so keep it accurate.</p>
+        <div class="g">
+          <div class="full"><label>Work experience</label>
+            <div class="seg" id="expSeg"><button data-x="1">I have experience</button><button data-x="0">Fresher (projects only)</button></div>
+            <p class="hint" style="margin:6px 0 0">Experienced: add jobs and projects. Fresher: skip jobs and show projects instead.</p></div>
+          <div class="full photo"><div class="pv" id="pv"></div>
+            <div><label for="photo">Profile photo (optional)</label><input type="file" id="photo" accept="image/*"></div></div>
+          <div class="full"><label for="name">Full name</label><input type="text" id="name" data-k="name" placeholder="e.g. Ayesha Khan" autocomplete="name"></div>
+          <div class="full"><label for="job">Job title</label><input type="text" id="job" data-k="job" placeholder="e.g. Full-Stack Developer"></div>
+          <div><label for="email">Email</label><input type="email" id="email" data-k="email" placeholder="you@example.com"><div class="err" id="emailErr">Enter a valid email address.</div></div>
+          <div><label for="phone">Phone</label><input type="tel" id="phone" data-k="phone" placeholder="+92 300 1234567"></div>
+          <div class="full"><label for="location">Location</label><input type="text" id="location" data-k="location" placeholder="City, Country"></div>
+          <div><label for="linkedin">LinkedIn</label><input type="text" id="linkedin" data-k="linkedin" placeholder="linkedin.com/in/yourname"></div>
+          <div><label for="website">Portfolio / website</label><input type="text" id="website" data-k="website" placeholder="yourname.dev"></div>
+        </div>
+      </div>
+      <div class="step" data-s="1">
+        <h2>Summary</h2><p class="hint">2–3 sentences: who you are, what you do best, what you want next.</p>
+        <label for="summary">Professional summary</label>
+        <textarea id="summary" data-k="summary" rows="6" maxlength="500"></textarea>
+        <div class="hint" style="margin:6px 0 0"><span id="cnt">0</span>/500</div>
+      </div>
+      <div class="step" data-s="2"><h2>Experience</h2><p class="hint">Newest first. Write one achievement per line.</p><div id="list-exp"></div><button class="add" data-add="exp">+ Add experience</button></div>
+      <div class="step" data-s="3"><h2>Education</h2><p class="hint">Degrees, diplomas and certifications.</p><div id="list-edu"></div><button class="add" data-add="edu">+ Add education</button></div>
+      <div class="step" data-s="4">
+        <h2>Skills</h2><p class="hint">Type a skill and press Enter.</p>
+        <input type="text" id="skillIn" placeholder="e.g. React, Laravel, Flutter"><div class="chips" id="chips"></div>
+      </div>
+      <div class="step" data-s="5"><h2>Projects</h2><p class="hint">Show work that proves your skills.</p><div id="list-proj"></div><button class="add" data-add="proj">+ Add project</button></div>
+    </div>
+    <div class="nav"><button class="btn" id="back">Back</button><button class="btn pri" id="next">Next</button></div>
+  </section>
+
+  <section class="stage"><div class="fit" id="fit"><div id="cv" class="classic"></div></div></section>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
